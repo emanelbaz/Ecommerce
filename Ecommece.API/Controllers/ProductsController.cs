@@ -5,7 +5,7 @@ using Ecommece.EF.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ecommerce.API.Controllers
+namespace Ecommece.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
