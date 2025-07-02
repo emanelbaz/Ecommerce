@@ -1,6 +1,6 @@
 using Ecommece.Core.Interfaces;
 using Ecommece.EF.Data;
-using Ecommerce.EF.Data;
+using Ecommece.EF.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,7 +1,7 @@
 ﻿
 using Ecommece.Core.Interfaces;
-using Ecommerce.Core.Models;
-using Ecommerce.EF.Data;
+using Ecommece.Core.Models;
+using Ecommece.EF.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

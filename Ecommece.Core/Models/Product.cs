@@ -1,6 +1,6 @@
 ﻿using Ecommece.Core.Models;
 
-namespace Ecommerce.Core.Models
+namespace Ecommece.Core.Models
 {
     public class Product: BaseEntity
     {

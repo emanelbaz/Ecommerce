@@ -1,7 +1,8 @@
-﻿using Ecommerce.Core.Models;
+﻿using Ecommece.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
-namespace Ecommerce.EF.Data
+namespace Ecommece.EF.Data
 {
     public class Context:DbContext
     {
@@ -11,5 +12,12 @@ namespace Ecommerce.EF.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        }
     }
 }

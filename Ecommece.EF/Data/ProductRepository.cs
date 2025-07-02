@@ -1,6 +1,6 @@
 ﻿using Ecommece.Core.Interfaces;
-using Ecommerce.Core.Models;
-using Ecommerce.EF.Data;
+using Ecommece.Core.Models;
+using Ecommece.EF.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
