@@ -17,14 +17,32 @@ namespace Ecommece.EF.Data
         { 
             _context = context;
         }
-        public async Task<List<Product>> GetAllAsync()
-        {
-            return await _context.Products.ToListAsync();
-        }
+        
 
+        public async Task<List<Product>> GetAllProductAsync()
+        {
+            return await _context.Products
+                .Include(p => p.ProductBrand)
+                .Include(p => p.ProductType)
+                .ToListAsync();
+        }
         public async Task<Product> getProductAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context.Products
+                .Include(p => p.ProductBrand)
+                .Include(p => p.ProductType)
+                .FirstOrDefaultAsync(p => p.Id==id);
         }
+        public async Task<List<ProductBrand>> GetAllProductBrandAsync()
+        {
+            return await _context.ProductBrands.ToListAsync();
+        }
+
+        public async Task<List<ProductType>> GetAllProductTypeAsync()
+        {
+            return await _context.ProductTypes.ToListAsync();
+        }
+
+        
     }
 }

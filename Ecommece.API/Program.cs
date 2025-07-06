@@ -1,4 +1,4 @@
-using Ecommece.Core.Interfaces;
+﻿using Ecommece.Core.Interfaces;
 using Ecommece.EF.Data;
 using Ecommece.EF.Data;
 using Microsoft.EntityFrameworkCore;
@@ -28,5 +28,26 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// بيسجل لو فيه خطاء حصل اثناء الmigration 
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+
+    var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+    
+
+    try
+    {
+        var context =serviceProvider.GetRequiredService<Context>();
+        context.Database.MigrateAsync().GetAwaiter().GetResult();
+    }
+    catch (Exception ex)
+    {
+        var logger = loggerFactory.CreateLogger("StartupLogger");
+        logger.LogError(ex, "An error occurred during startup scoped operations");
+    }
+}
+
 
 app.Run();

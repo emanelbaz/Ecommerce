@@ -10,6 +10,8 @@ namespace Ecommece.Core.Interfaces
     public interface IProductRepository
     {
         Task<Product> getProductAsync(int id);
-        Task<List<Product>> GetAllAsync();
+        Task<List<Product>> GetAllProductAsync();
+        Task<List<ProductBrand>> GetAllProductBrandAsync();
+        Task<List<ProductType>> GetAllProductTypeAsync();
     }
 }
