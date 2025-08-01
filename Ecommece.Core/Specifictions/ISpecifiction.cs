@@ -10,6 +10,6 @@ namespace Ecommece.Core.Specifictions
     public interface ISpecifiction<T>
     {
         Expression<Func<T, bool>> Criteria { get; }
-        List<Expression<Func<T, object>>> Includes { get; 
+        List<Expression<Func<T, object>>> Includes { get; }
     }
 }
