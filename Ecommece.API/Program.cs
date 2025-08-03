@@ -1,4 +1,5 @@
 ﻿using Ecommece.API.Helpers;
+using Ecommece.API.Middleware;
 using Ecommece.Core.Interfaces;
 using Ecommece.EF.Data;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+//دا جزء الerror
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseStatusCodePagesWithReExecute("errors/{0}");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
