@@ -9,14 +9,21 @@ namespace Ecommece.Core.Specifictions
 {
     public interface ISpecifiction<T>
     {
+        // شرط (فلترة)
         Expression<Func<T, bool>> Criteria { get; }
+
+        // الـ Includes (العلاقات اللي هتتعمل لها eager loading)
         List<Expression<Func<T, object>>> Includes { get; }
+
+        // ترتيب
         Expression<Func<T, object>> OrderBy { get; }
         Expression<Func<T, object>> OrderByDesc { get; }
 
+        // Paging
         int Take { get; }
         int Skip { get; }
-
         bool IspagingEnabled { get; }
     }
+
+
 }

@@ -1,5 +1,6 @@
 ﻿using Ecommece.Core.Interfaces;
 using Ecommece.Core.Models;
+using Ecommece.Core.Specifictions;
 using Ecommece.EF.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -43,6 +44,28 @@ namespace Ecommece.EF.Data
             return await _context.ProductTypes.ToListAsync();
         }
 
-        
+        public async Task<IReadOnlyList<Product>> GetAllProductsAsync(ISpecifiction<Product> spec)
+        {
+            return await ApplySpecification(spec).ToListAsync();
+        }
+
+        public async Task<int> CountAsync(ISpecifiction<Product> spec)
+        {
+            return await ApplySpecification(spec, ignorePaging: true).CountAsync();
+        }
+
+        public IQueryable<Product> ApplySpecification(ISpecifiction<Product> spec, bool ignorePaging = false)
+        {
+            var query = SpecificationEvaluator<Product>.GetQuery(_context.Products.AsQueryable(), spec);
+
+            // لو عايز تعد العناصر من غير ما يطبق paging
+            if (ignorePaging && spec.IspagingEnabled)
+            {
+                query = query.Skip(0).Take(int.MaxValue);
+            }
+
+            return query;
+        }
+
     }
 }

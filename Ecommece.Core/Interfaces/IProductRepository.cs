@@ -1,4 +1,5 @@
 ﻿using Ecommece.Core.Models;
+using Ecommece.Core.Specifictions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,10 @@ namespace Ecommece.Core.Interfaces
         Task<List<Product>> GetAllProductAsync();
         Task<List<ProductBrand>> GetAllProductBrandAsync();
         Task<List<ProductType>> GetAllProductTypeAsync();
+        Task<IReadOnlyList<Product>> GetAllProductsAsync(ISpecifiction<Product> spec);
+        Task<int> CountAsync(ISpecifiction<Product> spec);
+        IQueryable<Product> ApplySpecification(ISpecifiction<Product> spec, bool ignorePaging = false);
+
+
     }
 }
