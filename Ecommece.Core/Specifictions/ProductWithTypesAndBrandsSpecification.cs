@@ -10,6 +10,10 @@ namespace Ecommece.Core.Specifictions
     public class ProductWithTypesAndBrandsSpecification : BaseSpecifiction<Product>
     {
         public ProductWithTypesAndBrandsSpecification(Pagination paginationParams)
+    : base(x =>
+        (!paginationParams.BrandId.HasValue || paginationParams.BrandId == 0 || x.ProductBrandId == paginationParams.BrandId) &&
+        (!paginationParams.TypeId.HasValue || paginationParams.TypeId == 0 || x.ProductTypeId == paginationParams.TypeId)
+    )
         {
             AddInclude(p => p.ProductType);
             AddInclude(p => p.ProductBrand);
@@ -20,5 +24,6 @@ namespace Ecommece.Core.Specifictions
                 paginationParams.PageSize
             );
         }
+
     }
 }

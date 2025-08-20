@@ -10,6 +10,10 @@ namespace Ecommece.Core.Specifictions
     public class BaseSpecifiction<T> : ISpecifiction<T>
     {
         public BaseSpecifiction() { }
+        public BaseSpecifiction(Expression<Func<T, bool>> criteria)
+        {
+            Criteria = criteria;
+        }
         public BaseSpecifiction(Expression <Func<T,bool>> criteria, List<Expression<Func<T, object>>> includes) 
         {
             Criteria = criteria;
