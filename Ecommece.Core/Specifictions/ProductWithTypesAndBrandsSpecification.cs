@@ -18,7 +18,31 @@ namespace Ecommece.Core.Specifictions
             AddInclude(p => p.ProductType);
             AddInclude(p => p.ProductBrand);
             AddorderBy(p => p.Name);
-
+            if (!string.IsNullOrEmpty(paginationParams.Sort))
+            {
+                switch (paginationParams.Sort)
+                {
+                    case "nameAsc":
+                        AddorderBy(p => p.Name);
+                        break;
+                    case "nameDesc":
+                        AddorderByDesc(p => p.Name);
+                        break;
+                    case "priceAsc":
+                        AddorderBy(p => p.Price);
+                        break;
+                    case "priceDesc":
+                        AddorderByDesc(p => p.Price);
+                        break;
+                    default:
+                        AddorderBy(p => p.Name);
+                        break;
+                }
+            }
+            else
+            {
+                AddorderBy(p => p.Name); // default sort
+            }
             ApplayPaging(
                 (paginationParams.PageIndex - 1) * paginationParams.PageSize,
                 paginationParams.PageSize
