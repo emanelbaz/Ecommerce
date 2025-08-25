@@ -32,7 +32,8 @@ namespace Ecommece.API.Controllers
 
             var products = await _repo.GetAllProductsAsync(spec);
             //var totalItems = await _repo.CountAsync(new ProductWithTypesAndBrandsSpecification(new Pagination { PageSize = int.MaxValue }));
-            var countSpec = new ProductWithTypesAndBrandsSpecification(paginationParams);
+            var countSpec = new ProductWithTypesAndBrandsSpecification(paginationParams, true);
+
             var totalItems = await _repo.CountAsync(countSpec);
             var data = _mapper.Map<IReadOnlyList<ProductResponse>>(products);
 

@@ -11,6 +11,7 @@ namespace Ecommece.Core.Specifictions
     {
         public ProductWithTypesAndBrandsSpecification(Pagination paginationParams)
     : base(x =>
+     (string.IsNullOrEmpty(paginationParams.Search) || x.Name.ToLower().Contains(paginationParams.Search)) &&
         (!paginationParams.BrandId.HasValue || paginationParams.BrandId == 0 || x.ProductBrandId == paginationParams.BrandId) &&
         (!paginationParams.TypeId.HasValue || paginationParams.TypeId == 0 || x.ProductTypeId == paginationParams.TypeId)
     )
@@ -47,6 +48,16 @@ namespace Ecommece.Core.Specifictions
                 (paginationParams.PageIndex - 1) * paginationParams.PageSize,
                 paginationParams.PageSize
             );
+        }
+
+        public ProductWithTypesAndBrandsSpecification(Pagination paginationParams, bool isForCount)
+        : base(x =>
+            (string.IsNullOrEmpty(paginationParams.Search) || x.Name.ToLower().Contains(paginationParams.Search)) &&
+            (!paginationParams.BrandId.HasValue || x.ProductBrandId == paginationParams.BrandId) &&
+            (!paginationParams.TypeId.HasValue || x.ProductTypeId == paginationParams.TypeId)
+        )
+        {
+            
         }
 
     }
