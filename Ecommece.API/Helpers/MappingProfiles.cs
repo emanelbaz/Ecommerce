@@ -9,6 +9,9 @@ namespace Ecommece.API.Helpers
             CreateMap<Product, ProductResponse>()
                 .ForMember(d => d.ProductBrand, o => o.MapFrom(s => s.ProductBrand.Name))
                 .ForMember(d => d.ProductType, o => o.MapFrom(s => s.ProductType.Name));
+
+            // ProductRequest → Product
+            CreateMap<ProductRequest, Product>();
         }
     }
 }

@@ -18,6 +18,9 @@ namespace Ecommece.Core.Interfaces
         Task<int> CountAsync(ISpecifiction<Product> spec);
         IQueryable<Product> ApplySpecification(ISpecifiction<Product> spec, bool ignorePaging = false);
 
-
+        // 🆕 New methods
+        Task<Product> AddProductAsync(Product product);
+        Task<Product> UpdateProductAsync(Product product);
+        Task DeleteProductAsync(int id);
     }
 }

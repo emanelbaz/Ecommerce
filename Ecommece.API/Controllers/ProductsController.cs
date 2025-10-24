@@ -40,9 +40,13 @@ namespace Ecommece.API.Controllers
             return Ok(new PagedResult<ProductResponse>(data, totalItems, paginationParams.PageIndex, paginationParams.PageSize));
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> getProduct(int id)
+        public async Task<ActionResult<ProductResponse>> getProduct(int id)
         {
-            return await _repo.getProductAsync(id);
+            var product = await _repo.getProductAsync(id);
+            if (product == null) return NotFound();
+
+            var mapped = _mapper.Map<ProductResponse>(product);
+            return Ok(mapped);
         }
         [HttpGet("brands")]
         public async Task<ActionResult<List<ProductBrand>>> getProductBrands()
@@ -51,10 +55,38 @@ namespace Ecommece.API.Controllers
             return Ok(products);
         }
         [HttpGet("types")]
-        public async Task<ActionResult<List<ProductBrand>>> getProductTypes()
+        public async Task<ActionResult<List<ProductType>>> getProductTypes()
         {
-            var products = await _repo.GetAllProductTypeAsync();
-            return Ok(products);
+            var types = await _repo.GetAllProductTypeAsync();
+            return Ok(types);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductResponse>> AddProduct([FromBody] ProductRequest request)
+        {
+            var product = _mapper.Map<Product>(request);
+            var created = await _repo.AddProductAsync(product);
+            var response = _mapper.Map<ProductResponse>(created);
+            return CreatedAtAction(nameof(getProduct), new { id = response.Id }, response);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ProductResponse>> UpdateProduct(int id, [FromBody] ProductRequest request)
+        {
+            var existing = await _repo.getProductAsync(id);
+            if (existing == null) return NotFound();
+
+            _mapper.Map(request, existing);
+            var updated = await _repo.UpdateProductAsync(existing);
+
+            return Ok(_mapper.Map<ProductResponse>(updated));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            await _repo.DeleteProductAsync(id);
+            return NoContent();
         }
     }
 }

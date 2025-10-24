@@ -40,13 +40,13 @@ if (app.Environment.IsDevelopment())
 app.UseSwaggerUI();
 }
 
-// Use CORS
-app.UseCors("AllowAngular");
 //دا جزء الerror
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseStatusCodePagesWithReExecute("errors/{0}");
 app.UseHttpsRedirection();
 
+// Use CORS
+app.UseCors("AllowAngular");
 app.UseAuthorization();
 
 app.MapControllers();
@@ -54,20 +54,18 @@ app.MapControllers();
 // بيسجل لو فيه خطاء حصل اثناء الmigration 
 using (var scope = app.Services.CreateScope())
 {
-    var serviceProvider = scope.ServiceProvider;
-
-    var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-    
+    var services = scope.ServiceProvider;
+    var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
     try
     {
-        var context =serviceProvider.GetRequiredService<Context>();
-        context.Database.MigrateAsync().GetAwaiter().GetResult();
+        var context = services.GetRequiredService<Context>();
+        await context.Database.MigrateAsync();
     }
     catch (Exception ex)
     {
         var logger = loggerFactory.CreateLogger("StartupLogger");
-        logger.LogError(ex, "An error occurred during startup scoped operations");
+        logger.LogError(ex, "An error occurred during migration");
     }
 }
 
