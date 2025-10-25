@@ -4,6 +4,7 @@ using Ecommece.EF.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommece.EF.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20251025065951_AddOrdersAndPayments")]
+    partial class AddOrdersAndPayments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,16 +90,11 @@ namespace Ecommece.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("DeliveryMethodId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("PaymentMethod")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShippingMethod")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -104,10 +102,9 @@ namespace Ecommece.EF.Migrations
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("DeliveryMethodId");
 
                     b.ToTable("Orders");
                 });
@@ -254,6 +251,12 @@ namespace Ecommece.EF.Migrations
 
             modelBuilder.Entity("Ecommece.Core.Models.Order", b =>
                 {
+                    b.HasOne("Ecommece.Core.Models.DeliveryMethod", "DeliveryMethod")
+                        .WithMany()
+                        .HasForeignKey("DeliveryMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.OwnsOne("Ecommece.Core.Models.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<int>("OrderId")
@@ -287,6 +290,8 @@ namespace Ecommece.EF.Migrations
                                 .HasForeignKey("OrderId");
                         });
 
+                    b.Navigation("DeliveryMethod");
+
                     b.Navigation("ShippingAddress")
                         .IsRequired();
                 });
@@ -294,7 +299,7 @@ namespace Ecommece.EF.Migrations
             modelBuilder.Entity("Ecommece.Core.Models.OrderItem", b =>
                 {
                     b.HasOne("Ecommece.Core.Models.Order", null)
-                        .WithMany("Items")
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderId");
                 });
 
@@ -327,7 +332,7 @@ namespace Ecommece.EF.Migrations
 
             modelBuilder.Entity("Ecommece.Core.Models.Order", b =>
                 {
-                    b.Navigation("Items");
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("Ecommece.Core.Models.ProductBrand", b =>

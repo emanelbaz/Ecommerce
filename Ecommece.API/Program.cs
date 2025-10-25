@@ -2,6 +2,7 @@
 using Ecommece.API.Middleware;
 using Ecommece.Core.Interfaces;
 using Ecommece.EF.Data;
+using Ecommece.EF.Messaging;
 using Ecommece.EF.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -44,7 +45,8 @@ builder.Services.AddDbContext<Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
-
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddSingleton<IMessageBroker, RabbitMQMessageBroker>();
 // Add CORS policy
 builder.Services.AddCors(options =>
 {
