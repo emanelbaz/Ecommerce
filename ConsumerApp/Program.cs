@@ -72,6 +72,20 @@ consumer.Received += async (model, ea) =>
             channel.BasicPublish(exchange: "", routingKey: "email_notifications", basicProperties: null, body: emailBody);
 
             Console.WriteLine($"📩 Sent email notification for Order {order.Id}");
+
+            // Shipping event
+            var shippingOrder = new ShippingOrder
+            {
+                OrderId = order.Id,
+                ShippingProvider = "DHL"
+            };
+
+            var shippingJson = JsonConvert.SerializeObject(shippingOrder);
+            var shippingBody = Encoding.UTF8.GetBytes(shippingJson);
+
+            channel.BasicPublish(exchange: "", routingKey: "shipping_requests", basicProperties: null, body: shippingBody);
+
+            Console.WriteLine($"🚚 Shipping request sent for Order {order.Id}");
         }
     }
     catch (Exception ex)

@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsumerApp", "ConsumerApp\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailConsumer", "EmailConsumer\EmailConsumer.csproj", "{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShippingConsumer", "ShippingConsumer\ShippingConsumer.csproj", "{2678F5F1-3CAA-4FE8-8C33-8492CC340EFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2678F5F1-3CAA-4FE8-8C33-8492CC340EFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2678F5F1-3CAA-4FE8-8C33-8492CC340EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2678F5F1-3CAA-4FE8-8C33-8492CC340EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2678F5F1-3CAA-4FE8-8C33-8492CC340EFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
