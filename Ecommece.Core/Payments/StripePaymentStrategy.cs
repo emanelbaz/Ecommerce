@@ -15,5 +15,11 @@ namespace Ecommece.Core.Payments
             Console.WriteLine($"Processed {amount} {currency} via Stripe.");
             return true;
         }
+        public Task<bool> ProcessPaymentAsync(decimal amount)
+        {
+            Console.WriteLine($"💳 Processing Strip payment of {amount}...");
+            // simulate success
+            return Task.FromResult(true);
+        }
     }
 }

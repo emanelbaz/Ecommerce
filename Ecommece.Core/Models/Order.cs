@@ -10,7 +10,7 @@ namespace Ecommece.Core.Models
     public class Order : BaseEntity
     {
         public int UserId { get; set; } // ✅ بدل UserID
-        public string BuyerEmail { get; set; }
+        public string? BuyerEmail { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
         public Address ShippingAddress { get; set; }
@@ -40,10 +40,13 @@ namespace Ecommece.Core.Models
     public class CreateOrderRequest
     {
         public int UserId { get; set; }
+        public string BuyerEmail { get; set; }  // ✅ لازم يتبعت
         public List<OrderItemRequest> Items { get; set; } = new();
         public string PaymentMethod { get; set; }
         public string ShippingMethod { get; set; }
+        public Address ShippingAddress { get; set; } // ✅ إضافة ضرورية
     }
+
 
     public class OrderItemRequest
     {

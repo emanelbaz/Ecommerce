@@ -36,11 +36,20 @@ namespace Ecommece.EF.Services
             var order = new Order
             {
                 UserId = request.UserId,
+                BuyerEmail=request.BuyerEmail,
                 Subtotal = finalTotal,
                 PaymentMethod = request.PaymentMethod,
                 ShippingMethod = request.ShippingMethod,
                 OrderDate = DateTime.UtcNow,
                 Status = OrderStatus.Pending,
+                ShippingAddress = new Address
+                {
+                    FirstName = request.ShippingAddress.FirstName,
+                    LastName = request.ShippingAddress.LastName,
+                    Street = request.ShippingAddress.Street,
+                    City = request.ShippingAddress.City,
+                    Country = request.ShippingAddress.Country
+                },
                 Items = request.Items.Select(i => new OrderItem
                 {
                     ProductItemId = i.ProductId,

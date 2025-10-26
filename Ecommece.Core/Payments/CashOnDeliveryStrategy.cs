@@ -14,5 +14,11 @@ namespace Ecommece.Core.Payments
             Console.WriteLine($"Cash on delivery: {amount} {currency}");
             return true;
         }
+
+        public Task<bool> ProcessPaymentAsync(decimal amount)
+        {
+            Console.WriteLine($"💵 Payment will be collected on delivery. Amount: {amount}");
+            return Task.FromResult(true);
+        }
     }
 }

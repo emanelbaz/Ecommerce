@@ -9,5 +9,6 @@ namespace Ecommece.Core.Payments
     public interface IPaymentStrategy
     {
         Task<bool> ProcessPayment(decimal amount, string currency = "USD");
+        Task<bool> ProcessPaymentAsync(decimal amount);
     }
 }
