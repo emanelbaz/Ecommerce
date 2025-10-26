@@ -26,7 +26,7 @@ namespace Ecommece.Core.Models
 
         public string PaymentMethod { get; set; } // ✅ أضفناه
 
-        public string TrackingNumber { get; set; }
+       // public string TrackingNumber { get; set; }
         // ✅ دالة المجموع النهائي
         public decimal GetTotal() => Subtotal;
     }
