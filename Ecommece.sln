@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommece.API", "Ecommece.API\Ecommece.API.csproj", "{A7BBD108-8849-4382-9462-461BAAFC5635}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommece.API", "Ecommece.API\Ecommece.API.csproj", "{A7BBD108-8849-4382-9462-461BAAFC5635}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommece.EF", "Ecommece.EF\Ecommece.EF.csproj", "{3980424F-79AA-4350-AAE9-9820B6F37200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommece.EF", "Ecommece.EF\Ecommece.EF.csproj", "{3980424F-79AA-4350-AAE9-9820B6F37200}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecommece.Core", "Ecommece.Core\Ecommece.Core.csproj", "{67A3A169-5B28-4CF9-930F-3E69C73C8D34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecommece.Core", "Ecommece.Core\Ecommece.Core.csproj", "{67A3A169-5B28-4CF9-930F-3E69C73C8D34}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsumerApp", "ConsumerApp\ConsumerApp.csproj", "{C9296F32-E7CE-95B9-4BD3-3C09F3744CF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailConsumer", "EmailConsumer\EmailConsumer.csproj", "{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C9296F32-E7CE-95B9-4BD3-3C09F3744CF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9296F32-E7CE-95B9-4BD3-3C09F3744CF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9296F32-E7CE-95B9-4BD3-3C09F3744CF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4346EE-A5F8-46C1-A926-6D7AA101C27A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

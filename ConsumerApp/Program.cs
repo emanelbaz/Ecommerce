@@ -23,7 +23,7 @@ channel.QueueDeclare(queue: "payments", durable: false, exclusive: false, autoDe
 Console.WriteLine("💳 Waiting for payment messages...");
 
 var optionsBuilder = new DbContextOptionsBuilder<Context>();
-optionsBuilder.UseSqlServer("Server=192.168.70.100;Database=EcommeceDB;User Id=sa;Password=33355555@dts;TrustServerCertificate=True;");
+optionsBuilder.UseSqlServer("Server=62.117.61.133;Database=EcommeceDB;User Id=sa;Password=33355555@dts;TrustServerCertificate=True;");
 
 var context = new Context(optionsBuilder.Options);
 
@@ -57,23 +57,21 @@ consumer.Received += async (model, ea) =>
             : $"❌ Payment failed for Order {paymentData.OrderId}");
         if (success)
         {
-            var shippingMessage = new ShippingMessage
+            // Publish Email Event
+            var emailMessage = new EmailMessage
             {
-                OrderId = paymentData.OrderId,
-                ShippingAddress = order.ShippingAddress.ToString(),
-                ShippingMethod = order.ShippingMethod
+                OrderId = order.Id,
+                To = order.BuyerEmail, // assuming navigation property
+                Subject = "Order Payment Confirmation",
+                Body = $"Your order #{order.Id} has been paid successfully."
             };
 
-            var bodyy = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(shippingMessage));
+            var emailJson = JsonConvert.SerializeObject(emailMessage);
+            var emailBody = Encoding.UTF8.GetBytes(emailJson);
 
-            channel.BasicPublish(
-                exchange: "",
-                routingKey: "shipping",
-                basicProperties: null,
-                body: bodyy
-            );
+            channel.BasicPublish(exchange: "", routingKey: "email_notifications", basicProperties: null, body: emailBody);
 
-            Console.WriteLine($"📦 Shipping requested for Order {paymentData.OrderId}");
+            Console.WriteLine($"📩 Sent email notification for Order {order.Id}");
         }
     }
     catch (Exception ex)
