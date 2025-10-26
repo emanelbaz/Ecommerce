@@ -23,7 +23,7 @@ channel.QueueDeclare(queue: "payments", durable: false, exclusive: false, autoDe
 Console.WriteLine("💳 Waiting for payment messages...");
 
 var optionsBuilder = new DbContextOptionsBuilder<Context>();
-optionsBuilder.UseSqlServer("Server=.;Database=EcommeceDB;Trusted_Connection=True;TrustServerCertificate=True;");
+optionsBuilder.UseSqlServer("Server=192.168.70.100;Database=EcommeceDB;User Id=sa;Password=33355555@dts;TrustServerCertificate=True;");
 
 var context = new Context(optionsBuilder.Options);
 
@@ -55,6 +55,26 @@ consumer.Received += async (model, ea) =>
         Console.WriteLine(success
             ? $"✅ Payment succeeded for Order {paymentData.OrderId}"
             : $"❌ Payment failed for Order {paymentData.OrderId}");
+        if (success)
+        {
+            var shippingMessage = new ShippingMessage
+            {
+                OrderId = paymentData.OrderId,
+                ShippingAddress = order.ShippingAddress.ToString(),
+                ShippingMethod = order.ShippingMethod
+            };
+
+            var bodyy = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(shippingMessage));
+
+            channel.BasicPublish(
+                exchange: "",
+                routingKey: "shipping",
+                basicProperties: null,
+                body: bodyy
+            );
+
+            Console.WriteLine($"📦 Shipping requested for Order {paymentData.OrderId}");
+        }
     }
     catch (Exception ex)
     {

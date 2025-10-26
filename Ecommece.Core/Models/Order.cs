@@ -26,6 +26,7 @@ namespace Ecommece.Core.Models
 
         public string PaymentMethod { get; set; } // ✅ أضفناه
 
+        public string TrackingNumber { get; set; }
         // ✅ دالة المجموع النهائي
         public decimal GetTotal() => Subtotal;
     }
@@ -34,7 +35,10 @@ namespace Ecommece.Core.Models
     {
         Pending,
         PaymentReceived,
-        PaymentFailed
+        PaymentFailed,
+        Shipped,
+        Delivered,
+        Cancelled
     }
 
     public class CreateOrderRequest
