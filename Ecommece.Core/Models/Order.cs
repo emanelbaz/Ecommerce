@@ -9,8 +9,8 @@ namespace Ecommece.Core.Models
 {
     public class Order : BaseEntity
     {
-        public int UserId { get; set; } // ✅ بدل UserID
-        public string? BuyerEmail { get; set; }
+        public int UserId { get; set; } 
+        public string BuyerEmail { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;
 
         public Address ShippingAddress { get; set; }
@@ -26,7 +26,6 @@ namespace Ecommece.Core.Models
 
         public string PaymentMethod { get; set; } // ✅ أضفناه
 
-       // public string TrackingNumber { get; set; }
         // ✅ دالة المجموع النهائي
         public decimal GetTotal() => Subtotal;
     }
@@ -35,22 +34,18 @@ namespace Ecommece.Core.Models
     {
         Pending,
         PaymentReceived,
-        PaymentFailed,
-        Shipped,
-        Delivered,
-        Cancelled
+        PaymentFailed
     }
 
     public class CreateOrderRequest
     {
         public int UserId { get; set; }
-        public string BuyerEmail { get; set; }  // ✅ لازم يتبعت
+        public string BuyerEmail { get; set; }
         public List<OrderItemRequest> Items { get; set; } = new();
+        public Address ShippingAddress { get; set; }
         public string PaymentMethod { get; set; }
         public string ShippingMethod { get; set; }
-        public Address ShippingAddress { get; set; } // ✅ إضافة ضرورية
     }
-
 
     public class OrderItemRequest
     {

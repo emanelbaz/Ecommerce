@@ -1,4 +1,5 @@
-﻿using Ecommece.Core.Interfaces;
+﻿using Ecommece.Core.Caching;
+using Ecommece.Core.Interfaces;
 using Ecommece.Core.Models;
 using Ecommece.Core.Specifictions;
 using Ecommece.EF.Data;
@@ -14,26 +15,47 @@ namespace Ecommece.EF.Data
     public class ProductRepository : IProductRepository
     {
         private readonly Context _context;
-        public ProductRepository(Context context) 
+        private readonly ICacheService _cache;
+        public ProductRepository(Context context, ICacheService cache) 
         { 
             _context = context;
+            _cache = cache;
+        }
+
+        public async Task<IReadOnlyList<Product>> GetAllProductsAsync()
+        {
+            const string cacheKey = "products_all";
+
+            var cached = await _cache.GetAsync<IReadOnlyList<Product>>(cacheKey);
+            if (cached != null)
+                return cached;
+
+            var products = await _context.Products
+    .Include(p => p.ProductBrand)
+    .Include(p => p.ProductType)
+    .ToListAsync();
+            await _cache.SetAsync(cacheKey, products, TimeSpan.FromMinutes(5));
+
+            return products;
+        }
+        public async Task<Product?> GetProductByIdAsync(int id)
+        {
+            string cacheKey = $"product_{id}";
+
+            var cached = await _cache.GetAsync<Product>(cacheKey);
+            if (cached != null)
+                return cached;
+
+            var product = await _context.Products
+                .Include(p => p.ProductBrand)
+                .Include(p => p.ProductType)
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (product != null)
+                await _cache.SetAsync(cacheKey, product, TimeSpan.FromMinutes(10));
+
+            return product;
         }
         
-
-        public async Task<List<Product>> GetAllProductAsync()
-        {
-            return await _context.Products
-                .Include(p => p.ProductBrand)
-                .Include(p => p.ProductType)
-                .ToListAsync();
-        }
-        public async Task<Product> getProductAsync(int id)
-        {
-            return await _context.Products
-                .Include(p => p.ProductBrand)
-                .Include(p => p.ProductType)
-                .FirstOrDefaultAsync(p => p.Id==id);
-        }
         public async Task<List<ProductBrand>> GetAllProductBrandAsync()
         {
             return await _context.ProductBrands.ToListAsync();

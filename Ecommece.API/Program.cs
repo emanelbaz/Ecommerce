@@ -1,8 +1,10 @@
 ﻿using Ecommece.API.Helpers;
 using Ecommece.API.Middleware;
+using Ecommece.Core.Caching;
 using Ecommece.Core.Interfaces;
 using Ecommece.EF.Data;
 using Ecommece.EF.Messaging;
+using Ecommece.EF.Repositories;
 using Ecommece.EF.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +13,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//redis
+
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration["Redis:ConnectionString"];
+});
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddControllers()
@@ -25,16 +33,17 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = "ecommerce-api",
-            ValidateAudience = false,
+            ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Token:Key"])
-            )
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
         };
     });
 
@@ -45,8 +54,11 @@ builder.Services.AddDbContext<Context>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddSingleton<IMessageBroker, RabbitMQMessageBroker>();
+//add cashing service
+builder.Services.AddScoped<ICacheService, RedisCacheService>();
 // Add CORS policy
 builder.Services.AddCors(options =>
 {

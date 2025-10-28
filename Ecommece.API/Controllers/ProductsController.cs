@@ -4,13 +4,16 @@ using Ecommece.Core.Interfaces;
 using Ecommece.Core.Models;
 using Ecommece.Core.Specifictions;
 using Ecommece.EF.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ecommece.API.Controllers
 {
+   
     [ApiController]
     [Route("api/[controller]")]
+    
     public class ProductsController : ControllerBase
     {
        IProductRepository _repo;
@@ -19,12 +22,14 @@ namespace Ecommece.API.Controllers
             _repo = repo;
             _mapper = mapper;
         }
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ProductResponse>>> getProducts()
         {
-            var products= await _repo.GetAllProductAsync();
+            var products= await _repo.GetAllProductsAsync();
             return Ok( _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductResponse>>(products));
         }
+        [AllowAnonymous]
         [HttpGet("paged")]
         public async Task<ActionResult<PagedResult<ProductResponse>>> GetProductsPaging([FromQuery] Pagination paginationParams)
         {
@@ -40,21 +45,24 @@ namespace Ecommece.API.Controllers
             return Ok(new PagedResult<ProductResponse>(data, totalItems, paginationParams.PageIndex, paginationParams.PageSize));
         }
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<ProductResponse>> getProduct(int id)
         {
-            var product = await _repo.getProductAsync(id);
+            var product = await _repo.GetProductByIdAsync(id);
             if (product == null) return NotFound();
 
             var mapped = _mapper.Map<ProductResponse>(product);
             return Ok(mapped);
         }
         [HttpGet("brands")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<ProductBrand>>> getProductBrands()
         {
             var products = await _repo.GetAllProductBrandAsync();
             return Ok(products);
         }
         [HttpGet("types")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<ProductType>>> getProductTypes()
         {
             var types = await _repo.GetAllProductTypeAsync();
@@ -73,7 +81,7 @@ namespace Ecommece.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductResponse>> UpdateProduct(int id, [FromBody] ProductRequest request)
         {
-            var existing = await _repo.getProductAsync(id);
+            var existing = await _repo.GetProductByIdAsync(id);
             if (existing == null) return NotFound();
 
             _mapper.Map(request, existing);

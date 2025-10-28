@@ -8,7 +8,6 @@ using System.Text;
 
 namespace Ecommece.API.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
@@ -29,12 +28,13 @@ namespace Ecommece.API.Controllers
                 return BadRequest("Email already exists");
 
             using var hmac = new HMACSHA512();
+
             var user = new AppUser
             {
                 DisplayName = request.DisplayName,
                 Email = request.Email,
-                PasswordHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password))),
-                PasswordSalt = hmac.Key,
+                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password)),
+                PasswordSalt = hmac.Key
             };
 
             _context.Users.Add(user);
@@ -52,13 +52,17 @@ namespace Ecommece.API.Controllers
         public async Task<ActionResult<UserResponse>> Login(LoginRequest request)
         {
             var user = await _context.Users.SingleOrDefaultAsync(x => x.Email == request.Email);
-            if (user == null) return Unauthorized("Invalid email");
+            if (user == null)
+                return Unauthorized("Invalid email");
 
-            using var hmac = new HMACSHA512(user.PasswordSalt); // استخدم المفتاح المخزن
-            var computedHash = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password)));
+            using var hmac = new HMACSHA512(user.PasswordSalt);
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(request.Password));
 
-            if (computedHash != user.PasswordHash)
-                return Unauthorized("Invalid password");
+            for (int i = 0; i < computedHash.Length; i++)
+            {
+                if (computedHash[i] != user.PasswordHash[i])
+                    return Unauthorized("Invalid password");
+            }
 
             return new UserResponse
             {
@@ -68,5 +72,4 @@ namespace Ecommece.API.Controllers
             };
         }
     }
-
 }

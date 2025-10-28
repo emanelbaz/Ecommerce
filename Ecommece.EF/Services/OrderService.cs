@@ -15,12 +15,12 @@ namespace Ecommece.EF.Services
 
     public class OrderService : IOrderService
     {
-        private readonly Context _context;
+        private readonly IOrderRepository _orderRepository;
         private readonly IMessageBroker _broker;
 
-        public OrderService(Context context, IMessageBroker broker)
+        public OrderService(IOrderRepository orderRepository, IMessageBroker broker)
         {
-            _context = context;
+            _orderRepository = orderRepository;
             _broker = broker;
         }
 
@@ -36,12 +36,12 @@ namespace Ecommece.EF.Services
             var order = new Order
             {
                 UserId = request.UserId,
-                BuyerEmail=request.BuyerEmail,
+                BuyerEmail = request.BuyerEmail,
+                OrderDate = DateTime.UtcNow,
                 Subtotal = finalTotal,
+                Status = OrderStatus.Pending,
                 PaymentMethod = request.PaymentMethod,
                 ShippingMethod = request.ShippingMethod,
-                OrderDate = DateTime.UtcNow,
-                Status = OrderStatus.Pending,
                 ShippingAddress = new Address
                 {
                     FirstName = request.ShippingAddress.FirstName,
@@ -58,10 +58,10 @@ namespace Ecommece.EF.Services
                 }).ToList()
             };
 
-            await _context.Orders.AddAsync(order);
-            await _context.SaveChangesAsync();
+            await _orderRepository.AddAsync(order);
+            await _orderRepository.SaveChangesAsync();
 
-            // نرسل حدث الدفع إلى الـ Broker
+            // إرسال حدث الدفع للـ broker
             await _broker.PublishAsync("payments", new
             {
                 OrderId = order.Id,
@@ -74,14 +74,12 @@ namespace Ecommece.EF.Services
 
         public async Task<Order?> GetOrderByIdAsync(int id)
         {
-            return await _context.Orders
-                .Include(o => o.Items)
-                .FirstOrDefaultAsync(o => o.Id == id);
+            return await _orderRepository.GetByIdAsync(id);
         }
 
         public async Task<IEnumerable<Order>> GetAllOrdersAsync()
         {
-            return await _context.Orders.Include(o => o.Items).ToListAsync();
+            return await _orderRepository.GetAllAsync();
         }
     }
 
