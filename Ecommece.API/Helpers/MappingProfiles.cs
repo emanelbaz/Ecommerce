@@ -3,7 +3,7 @@ using Ecommece.Core.Models;
 
 namespace Ecommece.API.Helpers
 {
-    public class MappingProfiles: Profile
+    public class MappingProfiles : Profile
     {
         public MappingProfiles()
         {
@@ -23,17 +23,27 @@ namespace Ecommece.API.Helpers
                 }))
                 .ForMember(d => d.Variants, o => o.MapFrom(s => s.Variants));
 
+            // ProductVariantRequest → ProductVariant
+            CreateMap<ProductVariantRequest, ProductVariant>();
+
             // ProductVariant → ProductVariantResponse
             CreateMap<ProductVariant, ProductVariantResponse>()
-                .ForMember(d => d.Color, o => o.MapFrom((src, dest, destMember, context) =>
-                {
-                    var lang = context.Items["lang"]?.ToString() ?? "en";
-                    return lang == "ar" ? src.Color.NameAr : src.Color.NameEn;
-                }))
-                .ForMember(d => d.Size, o => o.MapFrom(s => s.Size.Name));
+    .ForMember(d => d.Color, o => o.MapFrom((src, dest, destMember, context) =>
+    {
+        var lang = context.Items["lang"]?.ToString() ?? "en";
+        if (src.Color == null) return null; // <-- إضافة check للـ null
+        return lang == "ar" ? src.Color.NameAr : src.Color.NameEn;
+    }))
+    .ForMember(d => d.Size, o => o.MapFrom(s => s.Size.Name));
 
             // ProductRequest → Product
-            CreateMap<ProductRequest, Product>();
+            CreateMap<ProductRequest, Product>()
+     .ForMember(d => d.Translations, o => o.MapFrom(s => new List<ProductTranslation>
+     {
+        new ProductTranslation { Language = "en", Name = s.NameEn, Description = s.DescriptionEn },
+        new ProductTranslation { Language = "ar", Name = s.NameAr, Description = s.DescriptionAr }
+     }))
+     .ForMember(d => d.Variants, o => o.MapFrom(s => s.Variants));
         }
     }
 }

@@ -94,13 +94,13 @@ namespace Ecommece.API.Controllers
         }
 
         // POST: api/products
+        // POST: api/products
         [HttpPost]
         public async Task<ActionResult<ProductResponse>> AddProduct([FromBody] ProductRequest request)
         {
             var product = _mapper.Map<Product>(request);
             var created = await _repo.AddProductAsync(product);
-
-            var response = _mapper.Map<ProductResponse>(created);
+            var response = _mapper.Map<ProductResponse>(created, opt => opt.Items["lang"] = "en");
             return CreatedAtAction(nameof(GetProduct), new { id = response.Id }, response);
         }
 
@@ -113,11 +113,9 @@ namespace Ecommece.API.Controllers
 
             _mapper.Map(request, existing);
             var updated = await _repo.UpdateProductAsync(existing);
-
-            var response = _mapper.Map<ProductResponse>(updated);
+            var response = _mapper.Map<ProductResponse>(updated, opt => opt.Items["lang"] = "en");
             return Ok(response);
         }
-
         // DELETE: api/products/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
