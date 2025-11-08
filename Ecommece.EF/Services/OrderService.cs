@@ -52,7 +52,7 @@ namespace Ecommece.EF.Services
                 },
                 Items = request.Items.Select(i => new OrderItem
                 {
-                    ProductItemId = i.ProductId,
+                    ProductVariantId = i.ProductVariantId,
                     Quantity = i.Quantity,
                     Price = i.Price
                 }).ToList()

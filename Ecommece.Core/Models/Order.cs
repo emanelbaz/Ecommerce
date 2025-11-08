@@ -47,10 +47,5 @@ namespace Ecommece.Core.Models
         public string ShippingMethod { get; set; }
     }
 
-    public class OrderItemRequest
-    {
-        public int ProductId { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
-    }
+    
 }
