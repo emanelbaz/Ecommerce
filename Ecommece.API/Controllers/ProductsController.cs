@@ -1,83 +1,110 @@
-﻿
-using AutoMapper;
+﻿using AutoMapper;
 using Ecommece.Core.Interfaces;
 using Ecommece.Core.Models;
 using Ecommece.Core.Specifictions;
-using Ecommece.EF.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Ecommece.API.Controllers
 {
-   
     [ApiController]
     [Route("api/[controller]")]
-    
     public class ProductsController : ControllerBase
     {
-       IProductRepository _repo;
-        IMapper _mapper;
-        public ProductsController(IProductRepository repo,IMapper mapper) {
+        private readonly IProductRepository _repo;
+        private readonly IMapper _mapper;
+
+        public ProductsController(IProductRepository repo, IMapper mapper)
+        {
             _repo = repo;
             _mapper = mapper;
         }
+
+        // GET: api/products
         [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductResponse>>> getProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductResponse>>> GetProducts([FromQuery] string lang = "en")
         {
-            var products= await _repo.GetAllProductsAsync();
-            return Ok( _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductResponse>>(products));
-        }
-        [AllowAnonymous]
-        [HttpGet("paged")]
-        public async Task<ActionResult<PagedResult<ProductResponse>>> GetProductsPaging([FromQuery] Pagination paginationParams)
-        {
+            var paginationParams = new Pagination { PageIndex = 1, PageSize = int.MaxValue };
             var spec = new ProductWithTypesAndBrandsSpecification(paginationParams);
 
             var products = await _repo.GetAllProductsAsync(spec);
-            //var totalItems = await _repo.CountAsync(new ProductWithTypesAndBrandsSpecification(new Pagination { PageSize = int.MaxValue }));
-            var countSpec = new ProductWithTypesAndBrandsSpecification(paginationParams, true);
 
+            var mapped = _mapper.Map<IReadOnlyList<ProductResponse>>(products, opt =>
+            {
+                opt.Items["lang"] = lang;
+            });
+
+            return Ok(mapped);
+        }
+
+        // GET: api/products/paged
+        [AllowAnonymous]
+        [HttpGet("paged")]
+        public async Task<ActionResult<PagedResult<ProductResponse>>> GetProductsPaging([FromQuery] Pagination paginationParams, [FromQuery] string lang = "en")
+        {
+            var spec = new ProductWithTypesAndBrandsSpecification(paginationParams);
+            var products = await _repo.GetAllProductsAsync(spec);
+
+            var countSpec = new ProductWithTypesAndBrandsSpecification(paginationParams, true);
             var totalItems = await _repo.CountAsync(countSpec);
-            var data = _mapper.Map<IReadOnlyList<ProductResponse>>(products);
+
+            var data = _mapper.Map<IReadOnlyList<ProductResponse>>(products, opt =>
+            {
+                opt.Items["lang"] = lang;
+            });
 
             return Ok(new PagedResult<ProductResponse>(data, totalItems, paginationParams.PageIndex, paginationParams.PageSize));
         }
+
+        // GET: api/products/{id}
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<ProductResponse>> getProduct(int id)
+        public async Task<ActionResult<ProductResponse>> GetProduct(int id, [FromQuery] string lang = "en")
         {
             var product = await _repo.GetProductByIdAsync(id);
             if (product == null) return NotFound();
 
-            var mapped = _mapper.Map<ProductResponse>(product);
+            var mapped = _mapper.Map<ProductResponse>(product, opt =>
+            {
+                opt.Items["lang"] = lang;
+            });
+
             return Ok(mapped);
         }
+
+        // GET: api/products/brands
         [HttpGet("brands")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<ProductBrand>>> getProductBrands()
+        public async Task<ActionResult<List<ProductBrand>>> GetProductBrands()
         {
-            var products = await _repo.GetAllProductBrandAsync();
-            return Ok(products);
+            var brands = await _repo.GetAllProductBrandAsync();
+            return Ok(brands);
         }
+
+        // GET: api/products/types
         [HttpGet("types")]
         [AllowAnonymous]
-        public async Task<ActionResult<List<ProductType>>> getProductTypes()
+        public async Task<ActionResult<List<ProductType>>> GetProductTypes()
         {
             var types = await _repo.GetAllProductTypeAsync();
             return Ok(types);
         }
 
+        // POST: api/products
         [HttpPost]
         public async Task<ActionResult<ProductResponse>> AddProduct([FromBody] ProductRequest request)
         {
             var product = _mapper.Map<Product>(request);
             var created = await _repo.AddProductAsync(product);
+
             var response = _mapper.Map<ProductResponse>(created);
-            return CreatedAtAction(nameof(getProduct), new { id = response.Id }, response);
+            return CreatedAtAction(nameof(GetProduct), new { id = response.Id }, response);
         }
 
+        // PUT: api/products/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<ProductResponse>> UpdateProduct(int id, [FromBody] ProductRequest request)
         {
@@ -87,9 +114,11 @@ namespace Ecommece.API.Controllers
             _mapper.Map(request, existing);
             var updated = await _repo.UpdateProductAsync(existing);
 
-            return Ok(_mapper.Map<ProductResponse>(updated));
+            var response = _mapper.Map<ProductResponse>(updated);
+            return Ok(response);
         }
 
+        // DELETE: api/products/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {

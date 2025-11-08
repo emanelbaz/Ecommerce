@@ -30,6 +30,22 @@ namespace Ecommece.EF.Data.Configuration
                 .HasOne(p => p.ProductType)
                 .WithMany()
                 .HasForeignKey(p => p.ProductTypeId);
+            
+
+            builder.HasMany(p => p.Translations)
+                   .WithOne(t => t.Product)
+                   .HasForeignKey(t => t.ProductId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(p => p.Variants)
+                   .WithOne(v => v.Product)
+                   .HasForeignKey(v => v.ProductId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(p => p.Pictures)
+                   .WithOne(pp => pp.Product)
+                   .HasForeignKey(pp => pp.ProductId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

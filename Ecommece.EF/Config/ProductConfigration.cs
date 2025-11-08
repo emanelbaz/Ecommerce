@@ -14,7 +14,6 @@ namespace Ecommece.EF.Config
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder.Property(p => p.Id).IsRequired();
-            builder.Property(p => p.Name).IsRequired();
             builder.HasOne(b => b.ProductBrand).WithMany().HasForeignKey(p => p.ProductBrandId);
             builder.HasOne(t => t.ProductType).WithMany().HasForeignKey(p => p.ProductTypeId);
         }

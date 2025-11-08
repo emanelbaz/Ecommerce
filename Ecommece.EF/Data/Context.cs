@@ -15,7 +15,11 @@ namespace Ecommece.EF.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
-
+        public DbSet<ProductTranslation> ProductTranslations { get; set; }
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Size> Sizes { get; set; }
+        public DbSet<ProductVariant> ProductVariants { get; set; }
+        public DbSet<ProductPicture> ProductPictures { get; set; }
         public DbSet<AppUser> Users { get; set; }
 
         public DbSet<Order> Orders { get; set; }

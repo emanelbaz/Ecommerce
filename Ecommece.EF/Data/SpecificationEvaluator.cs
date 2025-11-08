@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecommece.EF.Data
 {
+
     public class SpecificationEvaluator<T> where T : BaseEntity
     {
         public static IQueryable<T> GetQuery(IQueryable<T> inputQuery, ISpecifiction<T> spec)
@@ -15,6 +16,8 @@ namespace Ecommece.EF.Data
             {
                 query = query.Where(spec.Criteria);
             }
+
+            // Sorting
             if (spec.OrderBy != null)
             {
                 query = query.OrderBy(spec.OrderBy);
@@ -24,11 +27,13 @@ namespace Ecommece.EF.Data
                 query = query.OrderByDescending(spec.OrderByDesc);
             }
 
-            if (spec.IspagingEnabled )
+            // Paging
+            if (spec.IspagingEnabled)
             {
                 query = query.Skip(spec.Skip).Take(spec.Take);
             }
-            // Apply includes
+
+            // Includes
             query = spec.Includes.Aggregate(query, (current, include) => current.Include(include));
 
             return query;
