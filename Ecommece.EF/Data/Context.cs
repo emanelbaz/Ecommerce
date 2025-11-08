@@ -1,17 +1,15 @@
-﻿using Ecommece.Core.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Ecommece.Core.Models;
 
 namespace Ecommece.EF.Data
 {
-    public class Context:DbContext
+    public class Context : DbContext
     {
-        public Context() 
-        {
-        }
-        public Context(DbContextOptions<Context> options) : base(options)
-        {
-        }
+        public Context() { }
+
+        public Context(DbContextOptions<Context> options) : base(options) { }
+
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<ProductBrand> ProductBrands { get; set; }
@@ -30,11 +28,15 @@ namespace Ecommece.EF.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
 
-            modelBuilder.Entity<Order>().OwnsOne(o => o.ShippingAddress, a => { a.WithOwner(); });
-           
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information)
+                          .EnableSensitiveDataLogging();
         }
     }
 }
