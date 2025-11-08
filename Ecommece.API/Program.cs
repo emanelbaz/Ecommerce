@@ -2,6 +2,7 @@
 using Ecommece.API.Middleware;
 using Ecommece.Core.Caching;
 using Ecommece.Core.Interfaces;
+using Ecommece.Core.Models;
 using Ecommece.EF.Data;
 using Ecommece.EF.Messaging;
 using Ecommece.EF.Repositories;
@@ -60,32 +61,62 @@ builder.Services.AddSingleton<IMessageBroker, RabbitMQMessageBroker>();
 //add cashing service
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
 // Add CORS policy
-builder.Services.AddCors(options =>
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAngular",
+//        policy =>
+//        {
+//            policy.WithOrigins("http://localhost:4200") // Angular app origin
+//                  .AllowAnyHeader()
+//                  .AllowAnyMethod();
+//        });
+//});
+
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowAngular",
+//       builder =>
+//       {
+//           builder.WithOrigins("http://localhost:4200", "http://196.219.146.28")
+//                  .AllowAnyHeader()
+//                  .AllowAnyMethod();
+//       });
+
+
+//});
+builder.Services.AddCors(o =>
 {
-    options.AddPolicy("AllowAngular",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:4200") // Angular app origin
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
-        });
+    o.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
 });
 var app = builder.Build();
 
 //Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-app.UseSwaggerUI();
-}
+app.UseStaticFiles(); 
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ecommece API");
+    c.RoutePrefix = string.Empty; // optional لو عايزة swagger يكون الصفحة الرئيسية
+});
+//app.UseSwaggerUI();
+//}
 
 //دا جزء الerror
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseStatusCodePagesWithReExecute("errors/{0}");
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
+app.UsePathBase("/");
+//app.UseHttpsRedirection();
 app.UseHttpsRedirection();
 
 // Use CORS
-app.UseCors("AllowAngular");
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.MapControllers();
