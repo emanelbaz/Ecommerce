@@ -133,12 +133,12 @@ var app = builder.Build();
 //{
     app.UseSwagger();
 app.UseStaticFiles();
-//app.UseSwaggerUI(c =>
-//{
-//    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ecommece API");
-//    c.RoutePrefix = string.Empty; // optional لو عايزة swagger يكون الصفحة الرئيسية
-//});
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ecommece API");
+    c.RoutePrefix = string.Empty; // optional لو عايزة swagger يكون الصفحة الرئيسية
+});
+//app.UseSwaggerUI();
 //}
 
 //دا جزء الerror
