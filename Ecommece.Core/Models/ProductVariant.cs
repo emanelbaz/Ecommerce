@@ -26,6 +26,7 @@ namespace Ecommece.Core.Models
     }
     public class ProductVariantRequest
     {
+        public int ProductId { get; set; }
         public int ColorId { get; set; }
         public int SizeId { get; set; }
         public decimal Price { get; set; }
