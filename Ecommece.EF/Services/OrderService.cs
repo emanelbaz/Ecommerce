@@ -100,12 +100,12 @@ namespace Ecommece.EF.Services
             await transaction.CommitAsync();
 
             // 8) publish payment event
-            await _broker.PublishAsync("payments", new
-            {
-                OrderId = order.Id,
-                Amount = finalTotal,
-                PaymentMethod = request.PaymentMethod
-            });
+            //await _broker.PublishAsync("payments", new
+            //{
+            //    OrderId = order.Id,
+            //    Amount = finalTotal,
+            //    PaymentMethod = request.PaymentMethod
+            //});
 
             // 9) clear basket
             await _basketRepo.DeleteBasketAsync(request.BasketId);
