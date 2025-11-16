@@ -11,8 +11,8 @@ namespace Ecommece.API.Helpers
         {
             // Product → ProductResponse
             CreateMap<Product, ProductResponse>()
-                .ForMember(d => d.ProductBrand, o => o.MapFrom(s => s.ProductBrand.Name))
-                .ForMember(d => d.ProductType, o => o.MapFrom(s => s.ProductType.Name))
+                .ForMember(d => d.ProductBrand, o => o.MapFrom(s => s.ProductBrand != null ? s.ProductBrand.Name : null))
+                .ForMember(d => d.ProductType, o => o.MapFrom(s => s.ProductType != null ? s.ProductType.Name : null))
                 .ForMember(d => d.Name, o => o.MapFrom((src, dest, destMember, context) =>
                 {
                     var lang = context.Items["lang"]?.ToString() ?? "en";
@@ -36,7 +36,7 @@ namespace Ecommece.API.Helpers
                     if (src.Color == null) return null;
                     return lang == "ar" ? src.Color.NameAr : src.Color.NameEn;
                 }))
-                .ForMember(d => d.Size, o => o.MapFrom(s => s.Size.Name));
+                .ForMember(d => d.Size, o => o.MapFrom(s => s.Size != null ? s.Size.Name : null));
 
             // ProductRequest → Product
             CreateMap<ProductRequest, Product>()

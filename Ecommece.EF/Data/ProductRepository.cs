@@ -51,6 +51,7 @@ namespace Ecommece.EF.Data
             if (cached != null) return cached;
 
             var product = await _context.Products
+                .AsNoTracking()
                 .Include(p => p.ProductBrand)
                 .Include(p => p.ProductType)
                 .Include(p => p.Variants)

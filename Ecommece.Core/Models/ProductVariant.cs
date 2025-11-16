@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Ecommece.Core.Models
@@ -18,6 +19,7 @@ namespace Ecommece.Core.Models
         public int StockQuantity { get; set; }
 
         // Navigation
+        [JsonIgnore]
         public Product Product { get; set; }
         public Color Color { get; set; }
         public Size Size { get; set; }
