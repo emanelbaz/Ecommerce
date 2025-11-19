@@ -46,8 +46,7 @@ Ecommece/
 │   ├── Data/                    # DbContext
 │   ├── Services/                # Implementations for Repos, Orders, etc.
 │   └── Migrations/
-│
-└── Ecommece.Tests/              # Unit & Integration Tests (optional)
+
 ```
 
 ---
