@@ -14,7 +14,7 @@ namespace Ecommece.Core.Models
         [Required, MaxLength(50)]
         public string DisplayName { get; set; }
 
-        [Required, MaxLength(100)]
+        [Required, MaxLength(100), EmailAddress]
         public string Email { get; set; }
 
         [Required]
@@ -28,20 +28,24 @@ namespace Ecommece.Core.Models
 
     public class LoginRequest
     {
+        [Required, MaxLength(100), EmailAddress]
         public string Email { get; set; }
+        [Required]
         public string Password { get; set; }
     }
 
     public class RegisterRequest
     {
         public string DisplayName { get; set; }
-        public string Email { get; set; }
+        [Required, MaxLength(100), EmailAddress]
+            public string Email { get; set; }
+        [Required]
         public string Password { get; set; }
     }
 
     public class UserResponse
     {
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } 
         public string Email { get; set; }
         public string Token { get; set; }
     }
